@@ -7,6 +7,7 @@ corB = [color(255, 163, 102), color(204, 0, 0), color(255, 0, 0)]
 varZ = 5
 z = [ [0,0] , [0,0] ]
 pos = [ [0,0] , [0,0] ]
+inverterFuncao = [ [False, False] , [False , False] ]
 raio = [ [0, 0] , [0, 0] ]
 raioBola = 50/2
 raioMax = 0    
@@ -20,6 +21,9 @@ varEixosRandom = False
 varEixosRandomNumber = 0
 varEixosRandomNumber_ = False
 #TELA
+FontSize = 18
+Bolas = 1
+
 w = 0
 h = 0
 layers = [0,0]
@@ -31,7 +35,7 @@ timer = t
 def setup():
     global pos, w, h, k, vel, posMax, z, raio, raioMax, raioG, varEixos, timer, varEixosRandomNumber
     #size(640,640)
-    fullScreen()
+    fullScreen(P2D)
     
     if(varEixosRandom):
         if varEixosRandomNumber_:
@@ -65,7 +69,7 @@ def setup():
     layers[0] = createGraphics(width, height)
 
 def keyPressed():
-    global vel, varEixosRandom, varEixosRandomNumber, varEixosReset, varEixosRandomNumber_
+    global vel, varEixosRandom, varEixosRandomNumber, varEixosReset, varEixosRandomNumber_, Bolas, FontSize, inverterFuncao
     if(key == "r"):
         setup()
     elif(keyCode == UP):
@@ -114,21 +118,54 @@ def keyPressed():
                 varEixosRandomNumber_ = False
             else:
                 varEixosRandomNumber_ = True
-            
-         
+    elif(key == "b"):
+        if Bolas == 1:
+            Bolas = 2
+        else:
+            Bolas = 1
+    elif(key == ">"):
+        print("maior")
+        FontSize =  FontSize + 1
+    elif(key == "<"):
+        FontSize =  FontSize - 1
+    elif(key == "z"):
+        if inverterFuncao[0][0]:
+            inverterFuncao[0][0] = False
+        else:
+            inverterFuncao[0][0] = True
+        setup()
+    elif(key == "x"):
+        if inverterFuncao[0][1]:
+            inverterFuncao[0][1] = False
+        else:
+            inverterFuncao[0][1] = True   
+        setup()
+    elif(key == "c"):
+        if inverterFuncao[1][0]:
+            inverterFuncao[1][0] = False
+        else:
+            inverterFuncao[1][0] = True 
+        setup()
+    elif(key == "v"):
+        if inverterFuncao[1][1]:
+            inverterFuncao[1][1] = False
+        else:
+            inverterFuncao[1][1] = True  
+        setup()
+        
 def Texto():
     fill(cor[3])
-    textSize(20)
+    textSize(FontSize)
     #fnt = loadFont("BodoniMT-481.vlw")
     #textFont(fnt, 28)
     text("Limite das bolas : B1(%d, %d), B2(%d, %d)"%( posMax[0][0] ,posMax[0][1], posMax[1][0],posMax[1][1] ), 10, 20)  
     text("Velocidades : B1 = %.2f, B2 = %.2f"%(vel[0], vel[1]), 10, 40) 
     text("Limite do Grafico: %d"%(raioG), 10, 60)      
-    text("XB1: %.2f * sen( (2PI/%.2f) * %.2f"%(raio[0][0], z[0][0], k[0]), 10, 80)
-    text("YB1: %.2f * cos( (2PI/%.2f) * %.2f"%(raio[0][1], z[0][1], k[0]), 10, 100)
+    text("XB1: %.2f * sen( (2PI/%.2f) * %.2f)"%(raio[0][0], z[0][0], k[0]), 10, 80)
+    text("YB1: %.2f * sen( (2PI/%.2f) * %.2f)"%(raio[0][1], z[0][1], k[0]), 10, 100)
     text("="*10, 10, 120)
-    text("XB2: %.2f * cos( (2PI/%.2f) * %.2f"%(raio[1][0], z[1][0], k[1]), 10, 140)
-    text("YB2: %.2f * sen( (2PI/%.2f) * %.2f"%(raio[1][1], z[1][1], k[1]), 10, 160)
+    text("XB2: %.2f * sen( (2PI/%.2f) * %.2f)"%(raio[1][0], z[1][0], k[1]), 10, 140)
+    text("YB2: %.2f * sen( (2PI/%.2f) * %.2f)"%(raio[1][1], z[1][1], k[1]), 10, 160)
     text("="*10, 10, 180)
     text("Limite de variacao do multiplicador\ndos raios de atuacao dos eixos", 10, 200)
     if not varEixosRandom:
@@ -142,7 +179,9 @@ def Texto():
         text("\nTimer: %d"%(timer), 10, 350)
     text("\nEixos Reset: %s"%(varEixosReset), 10, 370)
     text("\nNumero aleatorio: %s"%(varEixosRandomNumber_), 10, 390)
-    
+    text("\n"+"="*10, 10, 410)
+    text("\nBolas = %d"%(Bolas), 10, 430)
+    text("\nInverter Funcoes = %s"%(inverterFuncao), 10, 450)
     
 def _timer():
     global timer
@@ -170,13 +209,16 @@ def draw():
     # BOLA
     pushMatrix()
     translate(width/2, height/2) 
-    text("X = {0:.3f}, Y = {1:.3f}".format(pos[0][0],pos[0][1]), pos[0][0] - 100, pos[0][1]- 50)
-    text("X = {0:.3f}, Y = {1:.3f}".format(pos[1][0],pos[1][1]), pos[1][0] - 100, pos[1][1]- 50)       
+    text("X = {0:.3f}, Y = {1:.3f}".format(pos[0][0],pos[0][1]), pos[0][0] - 100, pos[0][1]- 50)    
     noStroke()
     fill(corB[2])
     circle(pos[0][0], pos[0][1], raioBola)
-    fill(corB[1])
-    circle(pos[1][0], pos[1][1], raioBola)  
+    
+    if(Bolas == 2):
+        fill(corB[1])
+        circle(pos[1][0], pos[1][1], raioBola)  
+        fill(cor[3])
+        text("X = {0:.3f}, Y = {1:.3f}".format(pos[1][0],pos[1][1]), pos[1][0] - 100, pos[1][1]- 50)
     
     popMatrix()
     
@@ -202,19 +244,28 @@ def draw():
 
     k[0] = k[0] + (0.01 * vel[0])
     k[1] = k[1] + (0.01 * vel[1]) 
-
-    pos[0][0] = (raio[0][0] * cos(TWO_PI/z[0][0] * k[0])) 
-    pos[0][1] = (raio[0][1] * cos(TWO_PI/z[0][1] * k[0]))
+    #POSIÇÂO DA BOLA 1
+    if inverterFuncao[0][0]:
+        pos[0][0] = (raio[0][0] * cos(TWO_PI/z[0][0] * k[0]))
+    else:
+        pos[0][0] = (raio[0][0] * sin(TWO_PI/z[0][0] * k[0]/3))
+         
+    if inverterFuncao[0][1]:
+        pos[0][1] = (raio[0][1] * cos(TWO_PI/z[0][1] * k[0]))
+    else:
+        pos[0][1] = (raio[0][1] * sin(TWO_PI/z[0][1] * k[0]))
+    #============================================================#
     
-    pos[1][0] = (raio[1][0] * sin(TWO_PI/z[1][0] * k[1])) 
-    pos[1][1] = (raio[1][1] * sin(TWO_PI/z[1][1] * k[1]))
-    
-        
     if(pos[0][0] > posMax[0][0]): posMax[0][0] = pos[0][0]
     if(pos[0][1] > posMax[0][1]): posMax[0][1] = pos[0][1]
     
-    if(pos[1][0] > posMax[1][0]): posMax[1][0] = pos[1][0]
-    if(pos[1][1] > posMax[1][1]): posMax[1][1] = pos[1][1]
+    
+    if Bolas == 2:
+        pos[1][0] = (raio[1][0] * sin(TWO_PI/z[1][0] * k[1])) 
+        pos[1][1] = (raio[1][1] * sin(TWO_PI/z[1][1] * k[1]))
+    
+        if(pos[1][0] > posMax[1][0]): posMax[1][0] = pos[1][0]
+        if(pos[1][1] > posMax[1][1]): posMax[1][1] = pos[1][1]
     
     
     
